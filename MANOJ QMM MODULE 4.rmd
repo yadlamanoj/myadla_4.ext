@@ -1,0 +1,135 @@
+---
+title: "MANOJ QMM MODULE 4"
+output: html_document
+date: "`r Sys.Date()`"
+---
+Suppose,
+
+Large units produced at Plant 1 : $X_{l1}$
+
+Medium units produced at Plant 1 : $X_{m1}$
+
+Small units produced at Plant 1 : $X_{s1}$
+
+Large units produced at Plant 2 : $X_{l2}$
+
+Medium units produced at Plant 2 : $X_{m2}$
+
+Small units produced at Plant 2 : $X_{s2}$
+
+Large units produced at Plant 3 : $X_{l3}$
+
+Medium units produced at Plant 3 : $X_{m3}$
+
+Small units produced at Plant 3 : $X_{s3}$
+
+**objective function can be given as follows:**
+
+Maximize Z = $420(X_{l1}+X_{l2}+X_{l3})+360(X_{m1}+X_{m2}+X_{m3})+300(X_{s1}+X_{s2}+X_{s3})$
+
+Expanding the equation = $420X_{l1}+360X_{m1}+300X_{s1}+420X_{l2}+360X_{m2}+300X_{s2}+420X_{l3}+360X_{m3}+300X_{s3}$
+
+**Constraints can be given as :**
+
+Production Capacity Constraints:
+
+The production levels at each plant must not exceed their individual daily capacity limits. These limits are 750, 900, and 450 units per day for the respective plants, indicating an available excess capacity..
+
+$X_{l1}+X_{m1}+X_{s1}\le750$
+
+$X_{l2}+X_{m2}+X_{s2}\le900$
+
+$X_{l3}+X_{m3}+X_{s3}\le450$
+
+Storage Space Constraints:
+
+Each plant should ensure that the production of each size remains within the capacity of the available in-process storage.
+
+$20X_{l1}+15X_{m1}+12X_{s1}\le13000$
+
+$20X_{l2}+15X_{m2}+12X_{s2}\le12000$
+
+$20X_{l3}+15X_{m3}+12X_{s3}\le5000$
+
+Demand Constraints:
+
+The production of each size should align the sales forecasts.
+
+$X_{l1}+X_{m1}+X_{s1}\le900$
+
+$X_{l2}+X_{m2}+X_{s2}\le1200$
+
+$X_{l3}+X_{m3}+X_{s3}\le750$
+
+Employee Layoff Constraints:
+
+$(X_{l1}+X_{m1}+X_{s1})/750 = (X_{l2}+X_{m2}+X_{s2})/900 = (X_{l3}+X_{m3}+X_{s3})/450$
+
+Non negativity constraints:
+
+$X_l>0,X_m>0,X_s>0$
+
+The constraints can be given as :
+
+$X_{l1}+X_{m1}+X_{s1}+0X_{l2}+0X_{m2}+0X_{s2}+0X_{l3}+0X_{m3}+0X_{s3}\le750$
+
+$0X_{l1}+0X_{m1}+0X_{s1}+X_{l2}+X_{m2}+X_{s2}+0X_{l3}+0X_{m3}+0X_{s3}\le900$
+
+$0X_{l1}+0X_{m1}+0X_{s1}+0X_{l2}+0X_{m2}+0X_{s2}+X_{l3}+X_{m3}+X_{s3}\le450$
+
+$20X_{l1}+15X_{m1}+12X_{s1}+0X_{l2}+0X_{m2}+0X_{s2}+0X_{l3}+0X_{m3}+0X_{s3}\le13000$
+
+$0X_{l1}+0X_{m1}+0X_{s1}+20X_{l2}+15X_{m2}+12X_{s2}+0X_{l3}+0X_{m3}+0X_{s3}\le12000$
+
+$0X_{l1}+0X_{m1}+0X_{s1}+0X_{l2}+0X_{m2}+0X_{s2}+20X_{l3}+15X_{m3}+12X_{s3}\le5000$
+
+$X_{l1}+0X_{m1}+0X_{s1}+X_{l2}+0X_{m2}+0X_{s2}+X_{l3}+0X_{m3}+0X_{s3}\le900$
+
+$0X_{l1}+X_{m1}+0X_{s1}+0X_{l2}+X_{m2}+0X_{s2}+0X_{l3}+X_{m3}+0X_{s3}\le1200$
+
+$0X_{l1}+0X_{m1}+X_{s1}+0X_{l2}+0X_{m2}+X_{s2}+0X_{l3}+0X_{m3}+X_{s3}\le750$
+
+
+```{r}
+library(lpSolve)
+# Objective function creation
+
+objective__function<-c(420,360,300,420,360,300,420,360,300)
+
+#Constraint Matrix
+
+constraints__matrix<-matrix(c(1, 1, 1, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 1, 1, 1, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 1, 1, 1,
+20, 15, 12, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 20, 15, 12, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 20, 15, 12,
+1, 0, 0, 1, 0, 0, 1, 0, 0,
+0, 1, 0, 0, 1, 0, 0, 1, 0,
+0, 0, 1, 0, 0, 1, 0, 0, 1),nrow = 9,byrow = TRUE)
+
+# inequality signs
+
+Directions<-c("<=",
+"<=",
+"<=",
+"<=",
+"<=",
+"<=",
+"<=",
+"<=",
+"<=")
+
+# Right hand side coefficients
+
+RHS<-c(750,900,450,13000,12000,5000,900,1200,750)
+
+#Get the value of objective function
+
+lp('max',objective__function,constraints__matrix,Directions,RHS)
+
+#Get the value of decision variables
+
+lp('max',objective__function,constraints__matrix,Directions,RHS)$solution
+
+```
